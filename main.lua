@@ -97,7 +97,7 @@ function love.keypressed(key)
         game.simulation = {}
         ui.sendMessage('Simulation cleared')
     elseif key == 'tab' then
-        materialIndex = materialIndex + 1; if materialIndex > #materials then material = 1 end
-        material = materials[materialIndex]
+        game.materialIndex = game.materialIndex + 1; if game.materialIndex > #game.materials then game.materialIndex = 1 end
+        game.material = game.materials[game.materialIndex]
     end
 end
