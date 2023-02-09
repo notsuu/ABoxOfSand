@@ -7,6 +7,7 @@
 ]]--
 
 require 'lua.utils'
+json = require 'lua.json'
 
 function love.load()
     game = {
@@ -91,11 +92,26 @@ function love.wheelmoved(x,y)
 end
 
 function love.keypressed(key)
-    if key == 'q' then
-        game.simulation = {}
-        ui.sendMessage('Simulation cleared')
-    elseif key == 'tab' then
-        game.materials.index = game.materials.index + 1; if game.materials.index > #game.materials.names then game.materials.index = 1 end
-        game.materials.current = game.materials.names[game.materials.index]
-    end
+    binds = {
+        q = function()
+            game.simulation = {}
+            ui.sendMessage('Simulation cleared')
+        end,
+        tab = function()
+            game.materials.index = game.materials.index + 1; if game.materials.index > #game.materials.names then game.materials.index = 1 end
+            game.materials.current = game.materials.names[game.materials.index]
+        end,
+        o = function()
+            jsonEncode = json.encode(game.simulation)
+            success, message = love.filesystem.write('save.json',jsonEncode)
+            if success then ui.sendMessage('Simulation saved', ui.colors.ok)
+            else ui.sendMessage('Failed to save: '..message, ui.colors.error) end
+        end,
+        p = function()
+            contents, sizeOrError = love.filesystem.read('save.json')
+            if contents then game.simulation = json.decode(contents); ui.sendMessage('Simulation loaded', ui.colors.ok)
+            else ui.sendMessage('Failed to load: '..sizeOrError, ui.colors.error) end
+        end
+    }
+    if binds[key] then binds[key]() end
 end
