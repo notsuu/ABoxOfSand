@@ -10,16 +10,14 @@ require 'lua.utils'
 
 function love.load()
     game = {
-        material = 'sand',
-        materialIndex = 1,
         materials = {
-            'sand', 'stone', 'wood', 'metal'
-        },
-        materialColors = {
-            sand = {0.9, 0.75, 0.4},
-            stone = {0.25, 0.25, 0.25},
-            wood = {0.5, 0.25, 0.0},
-            metal = {0.65, 0.65, 0.65}
+            current = 'sand',
+            index = 1,
+            names = {'sand','stone','wood','metal'},
+            sand = {type='powder', color = {0.9, 0.75, 0.4}},
+            stone = {type='solid', color = {0.25, 0.25, 0.25}},
+            wood = {type='solid', color = {0.5, 0.25, 0.0}},
+            metal = {type='solid', color = {0.65, 0.65, 0.65}},
         },
         brushSize = 10,
         simulation = {}
@@ -58,7 +56,7 @@ function love.update()
         brushArea = getPixelsInArea(sx,sy,ex,ey)
         if not particleAlreadyExists(mouseX, mouseY) then
             for _, v in ipairs(brushArea) do
-                table.insert(game.simulation,{x = v.x, y = v.y, type = game.material}) 
+                table.insert(game.simulation,{x = v.x, y = v.y, type = game.materials.current}) 
             end
         end
     elseif love.mouse.isDown(2) then
@@ -73,14 +71,14 @@ function love.draw()
     width, height, flags = love.window.getMode()
     --draw particles
     for _,v in ipairs(game.simulation) do
-        love.graphics.setColor(game.materialColors[v.type])
+        love.graphics.setColor(game.materials[v.type].color)
         love.graphics.rectangle("fill",v.x,v.y,1,1)
     end
     --draw debug
     love.graphics.setColor(1,1,1)
-    love.graphics.print(love.timer.getFPS().." fps\n"..#game.simulation.." particles\nMaterial: "..game.material.."\nBrush size: "..game.brushSize,15,15)
+    love.graphics.print(love.timer.getFPS().." fps\n"..#game.simulation.." particles\nMaterial: "..game.materials.current.."\nBrush size: "..game.brushSize,15,15)
     --draw notification message
-    love.graphics.setColor(ui.message.color[1],ui.message.color[2],ui.message.color[3])
+    love.graphics.setColor(ui.message.color)
     if os.time() - ui.message.time <= 4 then love.graphics.print(ui.message.content,15,height-30) end
 end
 
@@ -97,7 +95,7 @@ function love.keypressed(key)
         game.simulation = {}
         ui.sendMessage('Simulation cleared')
     elseif key == 'tab' then
-        game.materialIndex = game.materialIndex + 1; if game.materialIndex > #game.materials then game.materialIndex = 1 end
-        game.material = game.materials[game.materialIndex]
+        game.materials.index = game.materials.index + 1; if game.materials.index > #game.materials.names then game.materials.index = 1 end
+        game.materials.current = game.materials.names[game.materials.index]
     end
 end

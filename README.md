@@ -2,6 +2,18 @@
 Yep, you guessed it, a sandbox game.
 <br>
 What do you do in it? I have no fucking idea. Is it a TPT clone? *Probably.*
+## Controls
+`LMB` - Create particles
+<br>
+`RMB` - Erase particles
+<br>
+`Scrollwheel` - Change brush size
+<br>
+`TAB` - Cycle through materials
+<br>
+`Q` - Clear simulation
+<br>
+
 ## Running from source
 1. Make sure you have [LÖVE](https://love2d.org/) 11.4 or newer installed on your machine.
 2. Clone the repository:
