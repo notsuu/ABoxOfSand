@@ -3,13 +3,13 @@ Yep, you guessed it, a sandbox game.
 <br>
 What do you do in it? I have no fucking idea. Is it a TPT clone? *Probably.*
 ## Controls
-`LMB` - Create particles
-<br>
-`RMB` - Erase particles
+`LMB/RMB` - Create/erase particles
 <br>
 `Scrollwheel` - Change brush size
 <br>
 `TAB` - Change material
+<br>
+`O/P` - Save/load simulation
 <br>
 `Q` - Clear simulation
 <br>
