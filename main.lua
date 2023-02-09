@@ -11,6 +11,7 @@ require 'lua.utils'
 function love.load()
     game = {
         material = 'sand',
+        materialIndex = 1,
         materials = {
             'sand', 'stone', 'wood', 'metal'
         },
@@ -57,7 +58,7 @@ function love.update()
         brushArea = getPixelsInArea(sx,sy,ex,ey)
         if not particleAlreadyExists(mouseX, mouseY) then
             for _, v in ipairs(brushArea) do
-                table.insert(game.simulation,{x = v.x, y = v.y, type = 'sand'}) 
+                table.insert(game.simulation,{x = v.x, y = v.y, type = game.material}) 
             end
         end
     elseif love.mouse.isDown(2) then
@@ -77,7 +78,7 @@ function love.draw()
     end
     --draw debug
     love.graphics.setColor(1,1,1)
-    love.graphics.print(love.timer.getFPS().." fps\n"..#game.simulation.." particles\nBrush size: "..game.brushSize,15,15)
+    love.graphics.print(love.timer.getFPS().." fps\n"..#game.simulation.." particles\nMaterial: "..game.material.."\nBrush size: "..game.brushSize,15,15)
     --draw notification message
     love.graphics.setColor(ui.message.color[1],ui.message.color[2],ui.message.color[3])
     if os.time() - ui.message.time <= 4 then love.graphics.print(ui.message.content,15,height-30) end
@@ -96,6 +97,7 @@ function love.keypressed(key)
         game.simulation = {}
         ui.sendMessage('Simulation cleared')
     elseif key == 'tab' then
-    
+        materialIndex = materialIndex + 1; if materialIndex > #materials then material = 1 end
+        material = materials[materialIndex]
     end
 end
