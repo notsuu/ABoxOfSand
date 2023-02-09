@@ -104,10 +104,11 @@ function love.keypressed(key)
             game.materials.current = game.materials.names[game.materials.index]
         end,
         o = function()
-            jsonEncode = json.encode(game.simulation)
-            success, message = love.filesystem.write('save.json',jsonEncode)
+            ok, data = pcall(json.encode,game.simulation)
+            if not ok then ui.sendMessage('Failed to encode JSON: '..data, ui.colors.error,6) else
+            success, message = love.filesystem.write('save.json',data)
             if success then ui.sendMessage('Simulation saved', ui.colors.ok)
-            else ui.sendMessage('Failed to save: '..message, ui.colors.error,6) end
+            else ui.sendMessage('Failed to save: '..message, ui.colors.error,6) end end
         end,
         p = function()
             contents, sizeOrError = love.filesystem.read('save.json')
@@ -119,7 +120,14 @@ function love.keypressed(key)
                 game.simulation = data
                 ui.sendMessage('Simulation loaded', ui.colors.ok) end
             else ui.sendMessage('Failed to load: '..sizeOrError, ui.colors.error,6) end
+        end,
+        f9 = function()
+            error('The operation completed successfully.')
         end
     }
     if binds[key] then binds[key]() end
+end
+
+function love.errorhandler(msg)
+    love.window.showMessageBox('router error handling technology 2.0','An unexpected error has occured!\n\n'..msg..'\n\n'..debug.traceback(),'error')
 end
