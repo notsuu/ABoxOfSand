@@ -9,7 +9,7 @@ What do you do in it? I have no fucking idea. Is it a TPT clone? *Probably.*
 <br>
 `Scrollwheel` - Change brush size
 <br>
-`TAB` - Cycle through materials
+`TAB` - Change material
 <br>
 `Q` - Clear simulation
 <br>
