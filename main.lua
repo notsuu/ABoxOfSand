@@ -35,11 +35,13 @@ function love.load()
             time = 0,
             content = "",
             color = {0,0,0,1},
+            timeout = 0,
         },
-        sendMessage = function(text,color)
+        sendMessage = function(text,color,time)
             ui.message.content = text or ""
             ui.message.color = color or ui.colors.standard
             ui.message.time = os.time()
+            ui.message.timeout = time or 4
         end
     }
     --once everything has been initialized, call ready message
@@ -80,7 +82,7 @@ function love.draw()
     love.graphics.print(love.timer.getFPS().." fps\n"..#game.simulation.." particles\nMaterial: "..game.materials.current.."\nBrush size: "..game.brushSize,15,15)
     --draw notification message
     love.graphics.setColor(ui.message.color)
-    if os.time() - ui.message.time <= 4 then love.graphics.print(ui.message.content,15,height-30) end
+    if os.time() - ui.message.time <= ui.message.timeout then love.graphics.print(ui.message.content,15,height-30) end
 end
 
 function love.wheelmoved(x,y)
@@ -105,12 +107,18 @@ function love.keypressed(key)
             jsonEncode = json.encode(game.simulation)
             success, message = love.filesystem.write('save.json',jsonEncode)
             if success then ui.sendMessage('Simulation saved', ui.colors.ok)
-            else ui.sendMessage('Failed to save: '..message, ui.colors.error) end
+            else ui.sendMessage('Failed to save: '..message, ui.colors.error,6) end
         end,
         p = function()
             contents, sizeOrError = love.filesystem.read('save.json')
-            if contents then game.simulation = json.decode(contents); ui.sendMessage('Simulation loaded', ui.colors.ok)
-            else ui.sendMessage('Failed to load: '..sizeOrError, ui.colors.error) end
+            if contents then 
+                success, data = pcall(json.decode, contents)
+                if not success then
+                     ui.sendMessage('Failed to decode JSON: '..data, ui.colors.error,6);
+                else
+                game.simulation = data
+                ui.sendMessage('Simulation loaded', ui.colors.ok) end
+            else ui.sendMessage('Failed to load: '..sizeOrError, ui.colors.error,6) end
         end
     }
     if binds[key] then binds[key]() end
