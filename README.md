@@ -15,7 +15,7 @@ What do you do in it? I have no fucking idea. Is it a TPT clone? *Probably.*
 <br>
 
 ## Running from source
-1. Make sure you have [LÖVE](https://love2d.org/) 11.4 or newer installed on your machine.
+1. Make sure you have [LÖVE](https://love2d.org/) 11.3 or newer installed on your machine.
 2. Clone the repository:
     ```
     git clone https://github.com/notsuu/ABoxOfSand
