@@ -3,8 +3,7 @@
 | The physics loop handler. Dear god this is probably gonna be a mess. |
 \----------------------------------------------------------------------/
 ]]--
-
-local gravity = 100
+local gravity = 1
 
 function particleOnFloor(particle)
     if particle.y >= love.graphics.getHeight() then return true else return false end
@@ -20,11 +19,14 @@ end
 
 function simulateGravity()
     --loop through all particles and see which must be dropped and which must not
-    for i,v in pairs(game.simulation) do
+    for i,v in ipairs(game.simulation) do
         --check if particle is not on ground and theres nothing below it
         if not particleOnFloor(v) and not anyParticlesBelow(v,game.simulation) then
-            v.y = v.y + gravity*love.timer.getDelta()
+            v.falling = true
+        else
+            v.falling = false
         end
+        if v.falling then v.y = v.y + gravity end
     end
 end
 
