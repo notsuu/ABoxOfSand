@@ -9,6 +9,7 @@
 require 'lua.utils'
 json = require 'lua.json'
 phys = require 'lua.phys'
+save = require 'lua.save'
 
 function love.load()
     game = {
@@ -23,7 +24,7 @@ function love.load()
         },
         brushSize = 10,
         simulation = {},
-        activeSimulation = {}
+        simulationRunning = true
     }
     ui = {
         colors = {
@@ -51,7 +52,7 @@ function love.load()
 end
 
 function love.update()
-    simulateGravity()
+    if game.simulationRunning then simulateGravity() end
     mouseX, mouseY = love.mouse.getX(), love.mouse.getY()
     if love.mouse.isDown(1) then
         --left click, handle spawning
@@ -83,7 +84,7 @@ function love.draw()
     end
     --draw debug
     love.graphics.setColor(1,1,1)
-    love.graphics.print(love.timer.getFPS().." fps\n"..#game.simulation.." particles ("..#game.activeSimulation.." active)\nMaterial: "..game.materials.current.."\nBrush size: "..game.brushSize,15,15)
+    love.graphics.print(love.timer.getFPS().." fps\n"..#game.simulation.." particles\nMaterial: "..game.materials.current.."\nBrush size: "..game.brushSize,15,15)
     --draw notification message
     love.graphics.setColor(ui.message.color)
     if os.time() - ui.message.time <= ui.message.timeout then love.graphics.print(ui.message.content,15,height-30) end
@@ -127,6 +128,19 @@ function love.keypressed(key)
         end,
         f9 = function()
             error('The operation completed successfully.')
+        end,
+        k = function()
+            success, ret = pcall(encodeSave, game.simulation)
+            if success then
+                fsuccess, status = love.filesystem.write('save.sand',ret)
+                if fsuccess then ui.sendMessage('Simulation saved',ui.colors.ok) else ui.sendMessage('Failed to save: '..status,ui.colors.error,6) end
+            else
+                ui.sendMessage('Failed to encode save: '..ret,ui.colors.error,6)
+            end
+        end,
+        f7 = function()
+            game.simulationRunning = not game.simulationRunning
+            if game.simulationRunning then ui.sendMessage('Simulation unpaused') else ui.sendMessage('Simulation paused') end
         end
     }
     if binds[key] then binds[key]() end

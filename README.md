@@ -13,6 +13,8 @@ What do you do in it? I have no fucking idea. Is it a TPT clone? *Probably.*
 <br>
 `Q` - Clear simulation
 <br>
+`F7` - Pause/unpause
+<br>
 
 ## Running from source
 1. Make sure you have [LÖVE](https://love2d.org/) 11.3 or newer installed on your machine.
