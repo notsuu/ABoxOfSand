@@ -22,7 +22,8 @@ function love.load()
             metal = {type='solid', color = {0.65, 0.65, 0.65}},
         },
         brushSize = 10,
-        simulation = {}
+        simulation = {},
+        activeSimulation = {}
     }
     ui = {
         colors = {
@@ -82,7 +83,7 @@ function love.draw()
     end
     --draw debug
     love.graphics.setColor(1,1,1)
-    love.graphics.print(love.timer.getFPS().." fps\n"..#game.simulation.." particles\nMaterial: "..game.materials.current.."\nBrush size: "..game.brushSize,15,15)
+    love.graphics.print(love.timer.getFPS().." fps\n"..#game.simulation.." particles ("..#game.activeSimulation.." active)\nMaterial: "..game.materials.current.."\nBrush size: "..game.brushSize,15,15)
     --draw notification message
     love.graphics.setColor(ui.message.color)
     if os.time() - ui.message.time <= ui.message.timeout then love.graphics.print(ui.message.content,15,height-30) end
