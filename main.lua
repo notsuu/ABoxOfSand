@@ -24,7 +24,13 @@ function love.load()
         },
         brushSize = 10,
         simulation = {},
-        simulationRunning = true
+        simulationRunning = true,
+    }
+    config = {
+        simulationScale = 1,
+        vsync = false,
+        simulationRate = -1,
+        locale = 'en'
     }
     ui = {
         colors = {
@@ -47,6 +53,27 @@ function love.load()
             ui.message.timeout = time or 4
         end
     }
+    --load config from file if it exists
+    if love.filesystem.getInfo('config.json') then
+        contents, sizeOrError = love.filesystem.read('config.json')
+            if contents then 
+                success, data = pcall(json.decode, contents)
+                if not success then
+                    love.window.showMessageBox('Warning','Failed to decode config!\n'..data,'warning')
+                else
+                    for i,v in pairs(data) do config[i] = v end
+                end
+            else love.window.showMessageBox('Warning','Failed to load config file!\n'..sizeOrError,'warning') end
+    else
+        --since it doesnt, create it
+        success, ret = pcall(json.encode, config)
+        if success then
+            writeSuccess, err = love.filesystem.write('/config.json',ret)
+            if not writeSuccess then love.window.showMessageBox('Warning','Failed to create config file!\n'..err,'warning') end
+        else
+            love.window.showMessageBox('Warning','Failed to encode config!\n'..ret,'warning')
+        end
+    end
     --once everything has been initialized, call ready message
     ui.sendMessage("Simulation ready", ui.colors.ok)
 end
